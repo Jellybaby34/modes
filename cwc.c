@@ -494,11 +494,20 @@ void mlt_4(uint32_t r[], const uint32_t a[], const uint32_t b[])
 void do_cwc(uint32_t in[], cwc_ctx ctx[1])
 {   uint32_t   *pt = ctx->hash + (CWC_CBLK_SIZE >> 2), data[4];
 
-    /* put big endian 32-bit items into little endian order     */
-    data[3] = bswap_32(in[2]);
-    data[2] = bswap_32(in[1]);
-    data[1] = bswap_32(in[0]);
-    data[0] = 0;
+	if (PLATFORM_BYTE_ORDER == IS_BIG_ENDIAN)
+	{
+		data[3] = bswap_32(in[2]);
+		data[2] = bswap_32(in[1]);
+		data[1] = bswap_32(in[0]);
+		data[0] = 0;
+	}
+	else
+	{
+		data[3] = in[2];
+		data[2] = in[1];
+		data[1] = in[0];
+		data[0] = 0;
+	}
 
     /* add current hash value into the current data block   */
     add_4(data, ctx->hash);
